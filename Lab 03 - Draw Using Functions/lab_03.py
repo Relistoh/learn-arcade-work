@@ -46,13 +46,13 @@ scale = 1
 def on_draw(delta_time):
     global current_x, moving_left, scale
     arc.View.clear(arc.View())
-    if scale == 9 and current_x == WINDOW_WIDTH // 2:
+    if scale == 11 and current_x == WINDOW_WIDTH // 2 - scale * 20:
         draw_whale_looking_forward()
         return 0
-    if current_x == 0:
+    if current_x == -scale * 30:
         moving_left = False
         scale += 2
-    if current_x == WINDOW_WIDTH:
+    if current_x == WINDOW_WIDTH + scale * 30:
         moving_left = True
         scale += 2
     if moving_left:
