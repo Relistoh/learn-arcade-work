@@ -14,6 +14,9 @@ class Ufo:
         self.speed_y = 0
         self.speed = 5
 
+        self.laser_sound = arc.load_sound("phaserUp6.mp3")
+        self.laser_sound_player = None
+
     def draw(self):
         arc.draw_circle_filled(self.x, self.y, self.size, self.color)
         arc.draw_circle_filled(self.x, self.y, self.size // 2 + self.size // 10, arc.color.DARK_GRAY)
@@ -27,18 +30,26 @@ class Ufo:
         arc.draw_ellipse_filled(self.x + self.size // 6, self.y + self.size // 10, self.size // 3, self.size // 4, arc.color.BLACK, -40)
         arc.draw_ellipse_filled(self.x - self.size // 6, self.y + self.size // 10, self.size // 3, self.size // 4, arc.color.BLACK, 40)
 
+    def play_laser(self):
+        if not self.laser_sound_player or not self.laser_sound_player.playing:
+            self.laser_sound_player = self.laser_sound.play()
+
     def update(self):
         self.x += self.speed_x
         self.y += self.speed_y
 
         if self.x + self.size >= WINDOW_WIDTH:
-            self.x = WINDOW_WIDTH - self.size
+            self.play_laser()
+            self.x = WINDOW_WIDTH - 2 * self.size
         if self.y + self.size >= WINDOW_HEIGHT:
-            self.y = WINDOW_HEIGHT - self.size
+            self.play_laser()
+            self.y = WINDOW_HEIGHT - 2 * self.size
         if self.x - self.size <= 0:
-            self.x = self.size
+            self.play_laser()
+            self.x = self.size * 2
         if self.y - self.size <= 0:
-            self.y = self.size
+            self.play_laser()
+            self.y = self.size * 2
 
 class MyGame(arc.Window):
     def __init__(self):
@@ -52,7 +63,6 @@ class MyGame(arc.Window):
 
     def on_update(self, delta_time):
         self.ufo.update()
-
 
     def on_key_press(self, symbol, modifiers):
         if symbol == arc.key.W:
